@@ -1,0 +1,32 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>William Shakespeare Quote of the Day</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    </head>
+    <body>
+        <header>
+            William Shakespeare Quote of the Day
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="{% url 'quotepage' %}">Quote of the Day</a></li>
+                <li><a href="{% url 'showallpage' %}">Show All</a></li>
+                <li><a href="{% url 'aboutpage' %}">About</a></li>
+            </ul>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+
+
+        <footer>
+
+        </footer>
+        
+    </body>
+</html>
