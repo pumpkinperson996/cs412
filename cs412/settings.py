@@ -27,9 +27,7 @@ SECRET_KEY = 'django-insecure-gr$fg37t0g2f5y(h#kqwg(ah80#!$u%7hkhv%=s%#q2!4g%e3z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'cs-webapps.bu.edu' 
-]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "hw",
+    "formdata",
+    
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,12 @@ CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
 if socket.gethostname() == CS_DEPLOYMENT_HOSTNAME:
     STATIC_URL = '/david996/static/'
     MEDIA_URL = '/david996/media/'
+    
+STATIC_URL = 'static/' # note: no leading slash
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_URL= "media/"  # note: no leading slash!
