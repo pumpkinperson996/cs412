@@ -24,5 +24,6 @@ urlpatterns = [
     path("hw/", include("hw.urls")),
     path("formdata/", include("formdata.urls")),
     path("quotes/", include("quotes.urls")),
+    path("restaurant/", include("restaurant.urls")),
     
 ]

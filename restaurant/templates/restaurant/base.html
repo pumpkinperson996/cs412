@@ -1,0 +1,31 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>bb.q Chicken Allston</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    </head>
+    <body>
+        <header>
+            BBQ Chicken Allston
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="{% url 'mainpage' %}">Main page</a></li>
+                <li><a href="{% url 'orderpage' %}">Order page</a></li>
+            </ul>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+
+
+        <footer>
+
+        </footer>
+        
+    </body>
+</html>

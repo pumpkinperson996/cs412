@@ -1,0 +1,48 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div>
+<h1>Place an Order</h1>
+
+<form action="{% url 'submit' %}" method="POST">
+    {% csrf_token %}
+    
+
+    <p>
+        <h3>Today's Special:  </h3>
+        
+        <label><input type="checkbox" name="Specialbox" value="{{ dailyspecial }}"> {{ special_name }} - ${{ special_price }}</label><br>
+        
+    </p>
+
+    <p>
+        <h3>Select your Items:</h3>
+        <label><input type="checkbox" name="dishes" value="Golden Original Wings:19.99"> Golden Original Boneless ($19.99)</label><br>
+        <label><input type="checkbox" name="dishes" value="Fries:5.49"> Fries ($5.49)</label><br>
+        <label><input type="checkbox" name="dishes" value="Tater Tots:5.49"> Tater Tots ($5.49)</label><br>
+        <label><input type="checkbox" name="dishes" value="Chips:2"> Chips ($2)</label><br>
+    </p>
+
+    <p>
+        <h3>Customer Information:</h3>
+        <label>Name: <input type="text" name="Name"></label><br>
+        <label>Phone: <input type="text" name="Phone"></label><br>
+        <label>Email: <input type="text" name="Email"></label><br>
+    </p>
+
+    <p>
+        <h3>Special Instructions </h3>
+        <label>Please share any special instructions: <input type="text" name="Instructions"></label><br>
+    </p>
+
+
+
+    
+
+    <input type="submit">
+
+</form>
+
+
+</div>
+{% endblock %}

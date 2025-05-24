@@ -1,0 +1,37 @@
+{% extends 'formdata/base.html' %}
+
+{% block content %}
+
+
+<div>
+<h1>Confirmation</h1>
+
+
+    <p>Thank you for your order!
+
+
+    <p>Your order will be ready at: {{ready_time}}</p>
+
+    <p>Your order is confirmed:
+        <ul>
+            {% for dish in selected_dishes %}
+                <li>{{ dish.name }} - ${{ dish.price }}</li>
+            {% endfor %}
+        </ul>
+    </p>
+
+    <p><strong>Total Price: ${{ total_price }}</strong></p>
+
+    <h3>Special Instructions <br>
+        {{instructions}}
+
+    </h3>
+
+    <p>Customer Information:
+        {{name}}<br>
+        {{email}}<br>
+        {{phone}}<br>
+    </p>
+
+</div>
+{% endblock %}
