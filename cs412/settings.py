@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "formdata",
     "quotes",
     "restaurant",
+    "blog",
     
 ]
 
