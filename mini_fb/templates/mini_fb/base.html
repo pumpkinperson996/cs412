@@ -1,0 +1,31 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>Show all the profies</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    </head>
+    <body>
+        <header>
+            profies
+        </header>
+
+        <nav>
+            <ul>
+                {% comment %} <li><a href="{% url 'show' %}">Main page</a></li> {% endcomment %}
+                {% comment %} <li><a href="{% url 'orderpage' %}">Order page</a></li> {% endcomment %}
+            </ul>
+        </nav>
+
+        {% block content %}
+        {% endblock %}
+
+
+
+        <footer>
+
+        </footer>
+        
+    </body>
+</html>

@@ -26,5 +26,6 @@ urlpatterns = [
     path("quotes/", include("quotes.urls")),
     path("restaurant/", include("restaurant.urls")),
     path("blog/", include("blog.urls")),
+    path("mini_fb/", include("mini_fb.urls")),
     
 ]
