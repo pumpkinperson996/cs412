@@ -1,34 +1,47 @@
 {% extends 'mini_fb/base.html' %}
+{% comment %}
+    show_all_profiles.html - Display All User Profiles
+    
+    This template displays a grid view of all user profiles in the system.
+    It extends the base.html template and overrides the content block.
+    
+    Context Variables:
+    - profiles: QuerySet of all Profile objects passed from ShowAllProfilesView
+    
+    
+{% endcomment %}
+
+
 
 {% block content %}
 
+<h1>Showing all Profiles</h1>
 
-
-<h1>Showing all Articles</h1>
-
-<div>
-    
-
+<main class="grid-container">
+    {% comment %} Loop through all profiles passed from the view {% endcomment %}
     {% for a in profiles %}
-    <profile>
+    <article class="profile">
+        {% comment %} Display profile image if available, linking to detail page {% endcomment %}
         {% if a.image_url %}
-		<img src="{{a.image_url}}" alt="{{a.image_url}}">
+        <a href="{% url 'show_profile' a.pk %}">
+            <img src="{{a.image_url}}" alt="Profile image for {{a.first_name}} {{a.last_name}}">
+        </a>
         {% endif %}
         
         <div>
-            <h2>{{a.first_name}}</h2>
-            <h3>{{a.last_name}}<h3>
-            <h3>{{a.city}}<h3>
-            <h3>{{a.email_address}}<h3>
-            <h3>{{a.image_url}}<h3>
-            
+            {% comment %} Display name as a link to the profile detail page {% endcomment %}
+            {% if a.first_name %}
+            <a href="{% url 'show_profile' a.pk %}">
+                <h2>{{a.first_name}}</h2>
+                <h3>{{a.last_name}}</h3>
+            </a>
+            {% endif %}
+            {% comment %} Display additional profile information {% endcomment %}
+            <h3>{{a.city}}</h3>
+            <h3>{{a.email_address}}</h3>
         </div>
-    </profile>
-
+    </article>
     {% endfor %}
-
-<div>
-
-
+</main>
 
 {% endblock %}

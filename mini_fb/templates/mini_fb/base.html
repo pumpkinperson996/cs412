@@ -1,30 +1,41 @@
+{% comment %}
+    base.html - Base Template for Mini Facebook Application
+    
+    This is the base template that provides the common structure for all pages
+    in the mini_fb application. It includes:
+    - HTML document structure
+    - Static CSS file loading
+    - Navigation menu (currently commented out)
+    - Content block for child templates to override
+    
+{% endcomment %}
+
 {% load static %}
 
 <html>
     <head>
-        <title>Show all the profies</title>
-        <link rel="stylesheet" href="{% static 'styles.css' %}">
-
+        <title>Show all the profiles</title>
+        <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
     </head>
     <body>
         <header>
-            profies
+            profiles
         </header>
 
         <nav>
             <ul>
+                {% comment %} Navigation links - uncomment when views are implemented {% endcomment %}
                 {% comment %} <li><a href="{% url 'show' %}">Main page</a></li> {% endcomment %}
                 {% comment %} <li><a href="{% url 'orderpage' %}">Order page</a></li> {% endcomment %}
             </ul>
         </nav>
 
         {% block content %}
+        {% comment %} Child templates will insert their content here {% endcomment %}
         {% endblock %}
 
-
-
         <footer>
-
+            {% comment %} Footer content can be added here {% endcomment %}
         </footer>
         
     </body>

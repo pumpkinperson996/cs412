@@ -1,0 +1,43 @@
+{% extends 'mini_fb/base.html' %}
+{% comment %}
+    show_profile.html - Individual Profile Detail Page
+    
+    This template displays the detailed view of a single user profile.
+    It extends the base.html template and overrides the content block.
+    
+{% endcomment %}
+
+
+
+{% block content %}
+
+<h1>Showing all profies</h1>
+
+
+    
+<main class="grid-container">
+
+    <profiles class="featured">
+        
+        {% if profiles.image_url %}
+		<img src="{{profiles.image_url}}" alt="{{profiles.image_url}}">
+        {% endif %}
+        
+        <div>
+            <h2>{{profiles.first_name}}</h2>
+            <h3>{{profiles.last_name}}<h3>
+            <h3>{{profiles.city}}<h3>
+            <h3>{{profiles.email_address}}<h3>
+            
+        </div>
+    </profiles>
+</main>
+
+
+
+
+    
+
+
+
+{% endblock %}
