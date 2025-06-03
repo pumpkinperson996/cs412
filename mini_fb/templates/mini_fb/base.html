@@ -1,45 +1,65 @@
 {% comment %}
-    base.html - Base Template for Mini Facebook Application
+    File: base.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/3/2025
+    Description: Base Template for Mini Facebook Application
     
     This is the base template that provides the common structure for all pages
     in the mini_fb application. It includes:
-    - HTML document structure
-    - Static CSS file loading
-    - Navigation menu (currently commented out)
-    - Content block for child templates to override
+    - HTML document structure with proper head and body sections
+    - Static CSS file loading for consistent styling
+    - Site-wide navigation menu with links to main pages
+    - Header and footer sections for consistent layout
+    - Content block for child templates to override with specific content
     
+    Child templates extend this base and override the content block to display
+    their specific content while maintaining the consistent site structure.
 {% endcomment %}
 
+{% comment %} Load Django's static files functionality to access CSS and other static assets {% endcomment %}
 {% load static %}
 
 <html>
     <head>
+        {% comment %} Page title - could be made dynamic in future versions {% endcomment %}
         <title>Show all the profiles</title>
+        
+        {% comment %} Link to external CSS file for consistent styling across all pages {% endcomment %}
         <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
     </head>
+    
     <body>
+        {% comment %} Site header with application branding {% endcomment %}
         <header>
             profiles
         </header>
 
+        {% comment %} 
+            Main navigation menu providing links to key application pages
+            Uses Django URL template tags to generate proper URLs
+        {% endcomment %}
         <nav>
             <ul>
                 <nav>
                     <ul>
+                        {% comment %} Link to view all profiles in the system {% endcomment %}
                         <li><a href="{% url 'show_all_profiles' %}">show all</a></li>
+                        
+                        {% comment %} Link to create a new profile {% endcomment %}
                         <li><a href="{% url 'create_profile' %}">Create</a></li>
-
                     </ul>
                 </nav>
             </ul>
         </nav>
 
+        {% comment %} 
+            Main content block that child templates will override
+            This is where page-specific content will be inserted
+        {% endcomment %}
         {% block content %}
         {% comment %} Child templates will insert their content here {% endcomment %}
         {% endblock %}
 
         <footer>
-            {% comment %} Footer content can be added here {% endcomment %}
         </footer>
         
     </body>

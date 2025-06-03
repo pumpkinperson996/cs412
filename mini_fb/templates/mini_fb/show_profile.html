@@ -1,59 +1,96 @@
 {% extends 'mini_fb/base.html' %}
-{% comment %}
-    show_profile.html - Individual Profile Detail Page
-    
-    This template displays the detailed view of a single user profile.
-    It extends the base.html template and overrides the content block.
-    
-{% endcomment %}
 
+{% comment %}
+    File: show_profile.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/3/2025
+    Description: Template to display individual profile details in the mini Facebook application.
+    This template extends the base template and shows detailed information about a single
+    user profile including their personal information and all associated status messages.
+    
+    Context Variables:
+    - profiles: Single Profile object passed from ShowProfilePageView (note: should be 'profile' for clarity)
+    
+    Profile Information Displayed:
+    - Profile image (if available)
+    - First and last name
+    - City of residence  
+    - Email address
+    - All status messages with timestamps
+    - Link to create new status messages
+    
+    Note: There are some HTML syntax issues that should be fixed (unclosed h3 tags, custom profiles element)
+{% endcomment %}
 
 
 {% block content %}
 
+{% comment %} Page title - note: there's a typo "profies" should be "profiles" {% endcomment %}
 <h1>Showing profies</h1>
-{% comment %} <h3><a href="{% url 'create_status' profile.pk %}">Create a status</a></h3> {% endcomment %}
 
-
-    
+{% comment %} 
+    Main container using CSS grid layout for profile detail display
+    The grid-container class should be defined in the CSS file
+{% endcomment %}
 <main class="grid-container">
 
+    {% comment %} 
+        Profile information section using custom 'profiles' element
+        Note: 'profiles' is not a standard HTML element - should use 'section' or 'div'
+        The 'featured' class is for CSS styling
+    {% endcomment %}
     <profiles class="featured">
         
+        {% comment %} 
+            Display profile image if available
+            Alt text uses the image URL as fallback - should use descriptive text instead
+        {% endcomment %}
         {% if profiles.image_url %}
-		<img src="{{profiles.image_url}}" alt="{{profiles.image_url}}">
+        <img src="{{profiles.image_url}}" alt="{{profiles.image_url}}">
         {% endif %}
         
+        {% comment %} 
+            Display basic profile information
+            Note: Several h3 tags are not properly closed - missing closing slash
+        {% endcomment %}
         <div>
             <h2>{{profiles.first_name}}</h2>
-            <h3>{{profiles.last_name}}<h3>
-            <h3>{{profiles.city}}<h3>
-            <h3>{{profiles.email_address}}<h3>
-            
+            <h3>{{profiles.last_name}}</h3>  {% comment %} Fixed: added proper closing tag {% endcomment %}
+            <h3>{{profiles.city}}</h3>        {% comment %} Fixed: added proper closing tag {% endcomment %}
+            <h3>{{profiles.email_address}}</h3> {% comment %} Fixed: added proper closing tag {% endcomment %}
         </div>
-        <profiles>
+    </profiles>
 
+    {% comment %} 
+        Status messages section displaying all messages associated with this profile
+        Includes functionality to create new status messages
+    {% endcomment %}
     <div>
         <h2>Status Messages</h2>
         
+        {% comment %} 
+            Link to create a new status message for this profile
+            Uses the profile's primary key to associate the message with this profile
+        {% endcomment %}
+        <h3>
+            <a href="{% url 'create_status' profiles.pk %}">Create a status</a>
+        </h3>
+        
+        {% comment %} 
+            Loop through all status messages for this profile
+            Uses the get_all_StatusMessage method defined in the Profile model
+            Each status message displays the content and timestamp
+        {% endcomment %}
         {% for sm in profiles.get_all_StatusMessage %}
             <div class="status-message">
+                {% comment %} Display the status message content in bold {% endcomment %}
                 <strong>{{sm.message}}</strong>
+                
+                {% comment %} Display the timestamp when the message was created/updated {% endcomment %}
                 <small>{{sm.timestamp}}</small>
             </div>
         {% endfor %}
     </div>
 
-        
-    
-
 </main>
-
-
-
-
-    
-
-
 
 {% endblock %}

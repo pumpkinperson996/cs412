@@ -1,20 +1,45 @@
 {% extends 'mini_fb/base.html' %}
-
+{% comment %}
+    File: create_profile_form.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/3/2025
+    Description: Template for creating a new user profile in the mini Facebook application.
+    This template extends the base template and provides a form for users to input
+    their profile information including name, city, email, and profile image URL.
+    
+    Context Variables:
+    - form: CreateProfileForm instance passed from CreateProfileView
+    
+    Form Fields:
+    - first_name: User's first name (required)
+    - last_name: User's last name (required)
+    - city: User's city of residence (required)
+    - email_address: User's email address (required)
+    - image_url: URL to user's profile image (optional)
+{% endcomment %}
 
 
 {% block content %}
 
 <h1>Create a new profile</h1>
 
-
-
-<!-- display the HTML form -->
+{% comment %} 
+    Display the HTML form for profile creation
+    The form uses POST method for secure data submission
+    action attribute specifies where to send the form data when submitted
+{% endcomment %}
 <form action="{% url 'create_profile' %}" method="POST">
+    {% comment %} CSRF token for security - protects against cross-site request forgery {% endcomment %}
     {% csrf_token %}
+    
+    {% comment %} 
+        Display form fields in a table format
+        Django automatically generates HTML input fields based on the model fields
+    {% endcomment %}
     <table>
-    {{form.as_table}}
+        {{form.as_table}}
     </table>
 
+    {% comment %} Submit button to process the form data {% endcomment %}
     <input type="submit" name="submit" value="Submit">
 </form>
 

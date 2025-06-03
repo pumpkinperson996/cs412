@@ -1,27 +1,46 @@
 {% extends 'mini_fb/base.html' %}
 
+{% comment %}
+    File: create_status_form.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/3/2025
+    Description: Template for creating a new status message for a specific user profile.
+    This template extends the base template and provides a form for users to post
+    status messages. The profile association is handled automatically by the view
+    based on the URL parameter.
+    
+    Context Variables:
+    - form: CreateStatusMessageForm instance passed from CreateStatusMessageView
+    
+    Form Fields:
+    - message: The status message content (required)
+    
+    Note: The profile foreign key and timestamp are handled automatically by the view
+{% endcomment %}
 
 
 {% block content %}
 
 <h1>Create a new status</h1>
 
-<!-- display the HTML form -->
-{% csrf_token %}
+{% comment %} 
+    Display the HTML form for status message creation
+    The form uses POST method for secure data submission
+    No action attribute needed - form submits to the same URL that displayed it
+{% endcomment %}
+<form method="POST">
+    {% comment %} CSRF token for security - protects against cross-site request forgery {% endcomment %}
+    {% csrf_token %}
+    
+    {% comment %} 
+        Display form fields in a table format
+        Only the message field is displayed since profile and timestamp are automatic
+    {% endcomment %}
     <table>
-    {% for field in form %}
-    <tr>
-        <th>{{field.name}}</th>
-        <td>{{field}}</td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td></td>
-        <td>
-            <input type='submit' name = 'Add Comment!' value= 'Add Comment!'>
-        </td>
-    </tr>
+        {{form.as_table}}
     </table>
+
+    {% comment %} Submit button to process the status message data {% endcomment %}
+    <input type="submit" name="submit" value="Submit">
 </form>
 
 {% endblock %}

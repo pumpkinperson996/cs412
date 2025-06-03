@@ -1,27 +1,45 @@
 {% extends 'mini_fb/base.html' %}
-{% comment %}
-    show_all_profiles.html - Display All User Profiles
-    
-    This template displays a grid view of all user profiles in the system.
-    It extends the base.html template and overrides the content block.
+
+{% comment %} 
+    File: show_all_profiles.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/3/2025
+    Description: Template to display all user profiles in the mini Facebook application.
+    This template extends the base template and displays a grid view of all user profiles
+    in the system. Each profile shows basic information and links to the detailed view.
     
     Context Variables:
     - profiles: QuerySet of all Profile objects passed from ShowAllProfilesView
     
+    Profile Display Information:
+    - Profile image (if available) with link to detail page
+    - First and last name with link to detail page
+    - City of residence
+    - Email address
     
+    Layout: Uses CSS grid container for responsive profile card layout
 {% endcomment %}
-
 
 
 {% block content %}
 
 <h1>Showing all Profiles</h1>
 
+{% comment %} 
+    Main container using CSS grid layout for responsive profile cards
+    The grid-container class should be defined in the CSS file
+{% endcomment %}
 <main class="grid-container">
-    {% comment %} Loop through all profiles passed from the view {% endcomment %}
+    {% comment %} 
+        Loop through all profile objects passed from the ShowAllProfilesView
+        Variable 'a' represents each individual Profile object in the iteration
+    {% endcomment %}
     {% for a in profiles %}
     <article class="profile">
-        {% comment %} Display profile image if available, linking to detail page {% endcomment %}
+        {% comment %} 
+            Display profile image if the user has provided an image URL
+            Image is wrapped in a link that goes to the profile detail page
+            Alt text provides accessibility for screen readers
+        {% endcomment %}
         {% if a.image_url %}
         <a href="{% url 'show_profile' a.pk %}">
             <img src="{{a.image_url}}" alt="Profile image for {{a.first_name}} {{a.last_name}}">
@@ -29,14 +47,19 @@
         {% endif %}
         
         <div>
-            {% comment %} Display name as a link to the profile detail page {% endcomment %}
+            {% comment %} 
+                Display user's name as clickable links to the profile detail page
+                Only display if first_name exists to avoid empty links
+                Uses the profile's primary key (pk) to generate the correct URL
+            {% endcomment %}
             {% if a.first_name %}
             <a href="{% url 'show_profile' a.pk %}">
                 <h2>{{a.first_name}}</h2>
                 <h3>{{a.last_name}}</h3>
             </a>
             {% endif %}
-            {% comment %} Display additional profile information {% endcomment %}
+            
+            {% comment %} Display additional profile information that doesn't need links {% endcomment %}
             <h3>{{a.city}}</h3>
             <h3>{{a.email_address}}</h3>
         </div>
