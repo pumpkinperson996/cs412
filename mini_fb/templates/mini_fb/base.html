@@ -24,9 +24,13 @@
 
         <nav>
             <ul>
-                {% comment %} Navigation links - uncomment when views are implemented {% endcomment %}
-                {% comment %} <li><a href="{% url 'show' %}">Main page</a></li> {% endcomment %}
-                {% comment %} <li><a href="{% url 'orderpage' %}">Order page</a></li> {% endcomment %}
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'show_all_profiles' %}">show all</a></li>
+                        <li><a href="{% url 'create_profile' %}">Create</a></li>
+
+                    </ul>
+                </nav>
             </ul>
         </nav>
 

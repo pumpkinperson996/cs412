@@ -11,7 +11,8 @@
 
 {% block content %}
 
-<h1>Showing all profies</h1>
+<h1>Showing profies</h1>
+{% comment %} <h3><a href="{% url 'create_status' profile.pk %}">Create a status</a></h3> {% endcomment %}
 
 
     
@@ -30,7 +31,22 @@
             <h3>{{profiles.email_address}}<h3>
             
         </div>
-    </profiles>
+        <profiles>
+
+    <div>
+        <h2>Status Messages</h2>
+        
+        {% for sm in profiles.get_all_StatusMessage %}
+            <div class="status-message">
+                <strong>{{sm.message}}</strong>
+                <small>{{sm.timestamp}}</small>
+            </div>
+        {% endfor %}
+    </div>
+
+        
+    
+
 </main>
 
 

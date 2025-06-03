@@ -1,4 +1,5 @@
-<!-- blog/templates/blog/article.html -->
+<!-- templates/article.html -->
+
 {% extends 'blog/base.html' %}
 <h1>{{article.title}}</h1>
 
@@ -19,5 +20,21 @@
         </div>
     </article>
 
+    <div>
+    <h2>Comments</h2>
+    <!-- Comments:
+    {{article.get_all_comments}} -->
+
+    {% for comment in article.get_all_comments %}
+    <article>
+        <div>
+        <strong>by {{comment.author}} at {{comment.published}}</strong>
+        <p>
+        {{comment.text}}
+        </div>
+    </article>
+
+    {% endfor %}
+</div>
 </main>
 {% endblock %}

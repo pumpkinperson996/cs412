@@ -18,7 +18,10 @@ from django.shortcuts import render
 
 # Create your views here.
 from .models import Profile
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from .forms import CreateProfileForm, CreateStatusMessageForm
+from django.urls import reverse
+
 
 
 
@@ -34,3 +37,37 @@ class ShowProfilePageView(DetailView):
     model = Profile
     template_name = 'mini_fb/show_profile.html' 
     context_object_name = 'profiles'
+
+class CreateProfileView(CreateView):
+    form_class = CreateProfileForm
+    template_name = "mini_fb/create_profile_form.html"
+    
+class CreateStatusMessageView(CreateView):
+    form_class = CreateStatusMessageForm
+    template_name = "mini_fb/create_status_form.html"
+    
+    def get_success_url(self):
+        '''Return the URL to redirect to after successfully submitting form.'''
+        pk = self.kwargs['pk']
+        return reverse('show_profile', kwargs={'pk':pk})
+
+    
+    def form_valid(self, form):
+        '''This method handles the form submission and saves the 
+        new object to the Django database.
+        We need to add the foreign key (of the Article) to the Comment
+        object before saving it to the database.
+        '''
+        
+		
+        
+        # retrieve the PK from the URL pattern
+        pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=pk)
+        # attach this article to the comment
+        form.instance.article = profile # set the FK
+
+        # delegate the work to the superclass method form_valid:
+        return super().form_valid(form)
+
+    
