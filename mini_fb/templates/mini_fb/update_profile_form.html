@@ -20,14 +20,14 @@
 
 {% block content %}
 
-<h1>Create a new profile</h1>
+<h1>Update profile</h1>
 
 {% comment %} 
     Display the HTML form for profile creation
     The form uses POST method for secure data submission
     action attribute specifies where to send the form data when submitted
 {% endcomment %}
-<form action="{% url 'create_profile' %}" method="POST"
+<form action="{% url 'update_profile' profile.pk %}" method="POST"
     enctype = "multipart/form-data">
     {% comment %} CSRF token for security - protects against cross-site request forgery {% endcomment %}
     {% csrf_token %}
@@ -41,7 +41,10 @@
     </table>
 
     {% comment %} Submit button to process the form data {% endcomment %}
-    <input type="submit" name="submit" value="Submit">
+    <input type="submit" name="submit" value="Update">
 </form>
 
+<form action = "{% url 'show_profile' profile.pk %}" method = "GET">
+    <input type = "submit" value = "Cancel">
+</form>
 {% endblock %}

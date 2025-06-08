@@ -40,10 +40,11 @@
             Image is wrapped in a link that goes to the profile detail page
             Alt text provides accessibility for screen readers
         {% endcomment %}
-        {% if a.image_url %}
+        {% if a.image_file %}
         <a href="{% url 'show_profile' a.pk %}">
-            <img src="{{a.image_url}}" alt="Profile image for {{a.first_name}} {{a.last_name}}">
+            <img src="{{a.image_file.url}}" alt="Profile image for {{a.first_name}} {{a.last_name}}">
         </a>
+        {% else %}
         {% endif %}
         
         <div>

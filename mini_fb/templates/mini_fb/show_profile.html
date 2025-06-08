@@ -44,10 +44,15 @@
             Display profile image if available
             Alt text uses the image URL as fallback - should use descriptive text instead
         {% endcomment %}
-        {% if profiles.image_url %}
-        <img src="{{profiles.image_url}}" alt="{{profiles.image_url}}">
+        {% if profiles.image_file %}
+        <img src="{{profiles.image_file.url}}" alt="{{profiles.image_file.url}}">
+        {% else %}
+        <h3>No image</h3>
         {% endif %}
-        
+
+   
+
+       
         {% comment %} 
             Display basic profile information
             Note: Several h3 tags are not properly closed - missing closing slash
@@ -58,6 +63,13 @@
             <h3>{{profiles.city}}</h3>        {% comment %} Fixed: added proper closing tag {% endcomment %}
             <h3>{{profiles.email_address}}</h3> {% comment %} Fixed: added proper closing tag {% endcomment %}
         </div>
+
+
+        <h3>
+            <a href="{% url 'update_profile' profiles.pk %}">Update this profile</a>
+	    </h3>
+
+
     </profiles>
 
     {% comment %} 
@@ -87,6 +99,18 @@
                 
                 {% comment %} Display the timestamp when the message was created/updated {% endcomment %}
                 <small>{{sm.timestamp}}</small>
+
+                {% for img in sm.get_images %}
+                    <img src='{{img.image_file.url}}' alt='{{img.caption}}' style="max-width: 300px; display: block; margin: 10px 0;">
+                {% endfor %}
+
+
+
+
+
+                <!-- Add update and delete links -->
+                <a href="{% url 'update_status' sm.pk %}">Update</a>
+                <a href="{% url 'delete_status' sm.pk %}">Delete</a>
             </div>
         {% endfor %}
     </div>

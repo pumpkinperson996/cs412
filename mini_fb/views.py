@@ -13,14 +13,14 @@ Views:
 4. CreateStatusMessageView - Handles creating new status messages for a profile
 """
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # import the Profile model to work with profile data
-from .models import Profile
+from .models import Profile, StatusMessage
 # import Django's generic class-based views for common operations
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 # import our custom forms for profile and status message creation
-from .forms import CreateProfileForm, CreateStatusMessageForm
+from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
 # import reverse function for URL generation
 from django.urls import reverse
 
@@ -67,6 +67,7 @@ class CreateProfileView(CreateView):
     # specify which template to use for the profile creation form
     template_name = "mini_fb/create_profile_form.html"
     
+    
 
 class CreateStatusMessageView(CreateView):
     """Handle creation of new StatusMessage objects.
@@ -93,19 +94,72 @@ class CreateStatusMessageView(CreateView):
         return reverse('show_profile', kwargs={'pk': pk})
 
     def form_valid(self, form):
-        """Handle the form submission and save the new object to the database.
-        
-        This method is called when the form data is valid. We need to
-        add the foreign key (profile) to the StatusMessage object
-        before saving it to the database.
-        """
-        
-        # retrieve the profile primary key from the URL pattern
+        # Get the profile
         pk = self.kwargs['pk']
-        # get the Profile object that this status message belongs to
         profile = Profile.objects.get(pk=pk)
-        # attach this profile to the status message before saving
         form.instance.profile = profile
+        
+        # Save the status message first
+        sm = form.save()
+        
+        # Handle file uploads
+        files = self.request.FILES.getlist('files')
+        
+        # Import the Image and StatusImage models
+        from .models import Image, StatusImage
+        
+        # Process each uploaded file
+        for file in files:
+            # Create an Image object for each uploaded file
+            image = Image.objects.create(
+                profile=profile,
+                image_file=file,
+                caption=''  # You can add caption functionality later
+            )
+            
+            # Create StatusImage to link the image with the status message
+            StatusImage.objects.create(
+                status_message=sm,
+                image=image
+            )
+        
+        # Return to the profile page
+        return redirect(self.get_success_url())
+    
+class UpdateProfileView(UpdateView):
+    
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = "mini_fb/update_profile_form.html"
+    
+    
+class DeleteStatusMessageView(DeleteView):
+    model = StatusMessage
+    template_name = "mini_fb/delete_status_form.html"
+    context_object_name = 'status_message'
+    
+    def get_success_url(self):
+        '''Return a the URL to which we should be directed after the delete.'''
+        
+        # get the pk for this status message
+        pk = self.kwargs.get('pk')
+        status_message = StatusMessage.objects.get(pk=pk)
+        
+        # find the profile to which this StatusMessage is related by FK
+        profile = status_message.profile
+        
+        # reverse to show the profile page
+        return reverse('show_profile', kwargs={'pk': profile.pk})
+    
 
-        # delegate the actual saving work to the superclass method
-        return super().form_valid(form)
+class UpdateStatusMessageView(UpdateView):
+    model = StatusMessage
+    fields = ['message']  # Only allow updating the message text
+    template_name = "mini_fb/update_status_form.html"
+    
+    def get_success_url(self):
+        # After update, return to the profile page
+        pk = self.kwargs.get('pk')
+        status_message = StatusMessage.objects.get(pk=pk)
+        profile = status_message.profile
+        return reverse('show_profile', kwargs={'pk': profile.pk})

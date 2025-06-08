@@ -27,7 +27,8 @@
     The form uses POST method for secure data submission
     No action attribute needed - form submits to the same URL that displayed it
 {% endcomment %}
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">  <!-- Add enctype -->
+    
     {% comment %} CSRF token for security - protects against cross-site request forgery {% endcomment %}
     {% csrf_token %}
     
@@ -38,6 +39,9 @@
     <table>
         {{form.as_table}}
     </table>
+
+    <input type="file" name="files" multiple />
+
 
     {% comment %} Submit button to process the status message data {% endcomment %}
     <input type="submit" name="submit" value="Submit">

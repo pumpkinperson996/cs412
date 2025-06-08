@@ -27,7 +27,8 @@ class Profile(models.Model):
     email_address = models.TextField(blank=False)
     
     # URL to user's profile image - optional field
-    image_url = models.URLField(blank=True)
+    # image_url = models.URLField(blank=True)
+    image_file = models.ImageField(blank=True) # an actual image
     
     def __str__(self):
         """Return a string representation of this Profile object."""
@@ -72,3 +73,43 @@ class StatusMessage(models.Model):
     def __str__(self):
         """Return a string representation of this StatusMessage object."""
         return f'{self.message}'
+    
+class Image(models.Model):
+    """Model representing an image uploaded by a user."""
+    
+    # Foreign key to the Profile who uploaded this image
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    
+    # The actual image file
+    image_file = models.ImageField(blank=False)
+    
+    # Timestamp when the image was uploaded
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    # Optional caption for the image
+    caption = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f"Image uploaded by {self.profile} at {self.timestamp}"
+    
+    def get_images(self):
+        """Return all Images associated with this StatusMessage."""
+        # Get all StatusImage objects for this status message
+        status_images = StatusImage.objects.filter(status_message=self)
+        # Extract the Image objects
+        images = [si.image for si in status_images]
+        return images
+    
+class StatusImage(models.Model):
+    """Model representing the relationship between StatusMessage and Image."""
+    
+    # Foreign key to the StatusMessage
+    status_message = models.ForeignKey(StatusMessage, on_delete=models.CASCADE)
+    
+    # Foreign key to the Image
+    image = models.ForeignKey(Image, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"Image for status: {self.status_message}"
+    
+    

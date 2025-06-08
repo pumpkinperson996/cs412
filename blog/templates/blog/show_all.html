@@ -9,8 +9,12 @@
 <main class="grid-container">
     {% for a in articles %}
     <article>
-        {% if a.image_url %}
-		<img src="{{a.image_url}}" alt="{{a.image_url}}">
+        <a href="{% url 'article' a.pk %}">
+        {% if a.image_file %}
+		{% comment %} <img src="{{a.image_url}}" alt="{{a.image_url}}"> {% endcomment %}
+        <img src = "{{a.image_file.url}}" alt="">
+        {% else %}
+        NO image
         {% endif %}
         
         <div>

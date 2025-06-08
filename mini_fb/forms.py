@@ -18,7 +18,7 @@ class CreateProfileForm(forms.ModelForm):
         """Meta class defines which model and fields to use for the form."""
         model = Profile
         # specify which fields from the Profile model should be included in the form
-        fields = ['first_name', 'last_name', 'city', 'email_address', 'image_url']
+        fields = ['first_name', 'last_name', 'city', 'email_address', 'image_file']
         
         
 class CreateStatusMessageForm(forms.ModelForm):
@@ -32,3 +32,8 @@ class CreateStatusMessageForm(forms.ModelForm):
         model = StatusMessage
         # only include the message field - profile and timestamp are handled automatically
         fields = ['message']
+        
+class UpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['city', 'email_address', 'image_file']
