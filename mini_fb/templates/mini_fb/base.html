@@ -18,10 +18,11 @@
 {% comment %} Load Django's static files functionality to access CSS and other static assets {% endcomment %}
 {% load static %}
 
+<!DOCTYPE html>
 <html>
     <head>
-        {% comment %} Page title - could be made dynamic in future versions {% endcomment %}
-        <title>Show all the profiles</title>
+        <meta charset="UTF-8">
+        <title>Mini Facebook</title>
         
         {% comment %} Link to external CSS file for consistent styling across all pages {% endcomment %}
         <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
@@ -30,26 +31,22 @@
     <body>
         {% comment %} Site header with application branding {% endcomment %}
         <header>
-            profiles
+            <h1>Mini Facebook</h1>
+            
+            {% comment %} 
+                Main navigation menu providing links to key application pages
+                Uses Django URL template tags to generate proper URLs
+            {% endcomment %}
+            <nav>
+                <ul>
+                    {% comment %} Link to view all profiles in the system {% endcomment %}
+                    <li><a href="{% url 'show_all_profiles' %}">All Profiles</a></li>
+                    
+                    {% comment %} Link to create a new profile {% endcomment %}
+                    <li><a href="{% url 'create_profile' %}">Create Profile</a></li>
+                </ul>
+            </nav>
         </header>
-
-        {% comment %} 
-            Main navigation menu providing links to key application pages
-            Uses Django URL template tags to generate proper URLs
-        {% endcomment %}
-        <nav>
-            <ul>
-                <nav>
-                    <ul>
-                        {% comment %} Link to view all profiles in the system {% endcomment %}
-                        <li><a href="{% url 'show_all_profiles' %}">show all</a></li>
-                        
-                        {% comment %} Link to create a new profile {% endcomment %}
-                        <li><a href="{% url 'create_profile' %}">Create</a></li>
-                    </ul>
-                </nav>
-            </ul>
-        </nav>
 
         {% comment %} 
             Main content block that child templates will override
@@ -60,6 +57,7 @@
         {% endblock %}
 
         <footer>
+            {% comment %} Footer can be populated with additional content later {% endcomment %}
         </footer>
         
     </body>

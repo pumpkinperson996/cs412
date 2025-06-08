@@ -74,6 +74,14 @@ class StatusMessage(models.Model):
         """Return a string representation of this StatusMessage object."""
         return f'{self.message}'
     
+    def get_images(self):
+        """Return all Images associated with this StatusMessage."""
+        # Get all StatusImage objects for this status message
+        status_images = StatusImage.objects.filter(status_message=self)
+        # Extract the Image objects
+        images = [si.image for si in status_images]
+        return images
+    
 class Image(models.Model):
     """Model representing an image uploaded by a user."""
     
@@ -92,13 +100,7 @@ class Image(models.Model):
     def __str__(self):
         return f"Image uploaded by {self.profile} at {self.timestamp}"
     
-    def get_images(self):
-        """Return all Images associated with this StatusMessage."""
-        # Get all StatusImage objects for this status message
-        status_images = StatusImage.objects.filter(status_message=self)
-        # Extract the Image objects
-        images = [si.image for si in status_images]
-        return images
+    
     
 class StatusImage(models.Model):
     """Model representing the relationship between StatusMessage and Image."""

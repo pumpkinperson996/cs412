@@ -82,6 +82,15 @@ class CreateStatusMessageView(CreateView):
     # specify which template to use for the status message creation form
     template_name = "mini_fb/create_status_form.html"
     
+    def get_context_data(self, **kwargs):
+        """Add the profile to the context for the template."""
+        context = super().get_context_data(**kwargs)
+        # Get the profile from the URL
+        pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=pk)
+        context['profile'] = profile
+        return context
+    
     def get_success_url(self):
         """Return the URL to redirect to after successfully submitting form.
         
@@ -104,6 +113,7 @@ class CreateStatusMessageView(CreateView):
         
         # Handle file uploads
         files = self.request.FILES.getlist('files')
+
         
         # Import the Image and StatusImage models
         from .models import Image, StatusImage
@@ -116,6 +126,7 @@ class CreateStatusMessageView(CreateView):
                 image_file=file,
                 caption=''  # You can add caption functionality later
             )
+
             
             # Create StatusImage to link the image with the status message
             StatusImage.objects.create(
@@ -124,6 +135,7 @@ class CreateStatusMessageView(CreateView):
             )
         
         # Return to the profile page
+
         return redirect(self.get_success_url())
     
 class UpdateProfileView(UpdateView):
