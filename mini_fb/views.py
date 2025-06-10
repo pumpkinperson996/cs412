@@ -18,7 +18,7 @@ from django.shortcuts import render, redirect
 # import the Profile model to work with profile data
 from .models import Profile, StatusMessage
 # import Django's generic class-based views for common operations
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 # import our custom forms for profile and status message creation
 from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
 # import reverse function for URL generation
@@ -175,3 +175,66 @@ class UpdateStatusMessageView(UpdateView):
         status_message = StatusMessage.objects.get(pk=pk)
         profile = status_message.profile
         return reverse('show_profile', kwargs={'pk': profile.pk})
+    
+class AddFriendView(View):
+    """Handle adding a friend relationship between two profiles.
+    
+    This view processes the add friend action from URL parameters
+    without requiring a form. It reads profile PKs from the URL,
+    creates the friendship, and redirects back to the profile page.
+    """
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Process the add friend request.
+        
+        Reads profile PKs from URL parameters, validates them,
+        and creates the friend relationship if valid.
+        """
+        # Get the profile PKs from URL parameters
+        pk = self.kwargs.get('pk')  # Profile doing the adding
+        other_pk = self.kwargs.get('other_pk')  # Profile to add as friend
+        
+        # Retrieve the Profile objects from the database
+        try:
+            profile = Profile.objects.get(pk=pk)
+            other_profile = Profile.objects.get(pk=other_pk)
+            
+            # Use the add_friend method to create the friendship
+            profile.add_friend(other_profile)
+            
+        except Profile.DoesNotExist:
+            # Handle case where one of the profiles doesn't exist
+            pass
+        
+        # Redirect back to the profile page
+        return redirect('show_profile', pk=pk)
+
+
+class ShowFriendSuggestionsView(DetailView):
+    """Display friend suggestions for a specific profile.
+    
+    Shows a list of profiles that the user could add as friends,
+    excluding existing friends and the profile itself.
+    """
+    
+    # Specify the model to use
+    model = Profile
+    # Template for displaying friend suggestions
+    template_name = 'mini_fb/friend_suggestions.html'
+    # Context variable name for the profile
+    context_object_name = 'profile'
+    
+    
+class ShowNewsFeedView(DetailView):
+    """Display the news feed for a specific profile.
+    
+    Shows status messages from the profile and all their friends,
+    ordered by most recent first.
+    """
+    
+    # Specify the model to use
+    model = Profile
+    # Template for displaying the news feed
+    template_name = 'mini_fb/news_feed.html'
+    # Context variable name for the profile
+    context_object_name = 'profile'

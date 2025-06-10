@@ -53,6 +53,15 @@ urlpatterns = [
     path('status/<int:pk>/delete', DeleteStatusMessageView.as_view(), name='delete_status'),
     
     path('status/<int:pk>/update', UpdateStatusMessageView.as_view(), name='update_status'),
+    
+    # map add friend URL with two profile PKs to the add friend view
+    path('profile/<int:pk>/add_friend/<int:other_pk>', AddFriendView.as_view(), name='add_friend'),
+    
+    # map friend suggestions URL to show friend suggestions view
+    path('profile/<int:pk>/friend_suggestions', ShowFriendSuggestionsView.as_view(), name='friend_suggestions'),
+    
+    # map news feed URL to show news feed view
+    path('profile/<int:pk>/news_feed', ShowNewsFeedView.as_view(), name='news_feed'),
 
 
 

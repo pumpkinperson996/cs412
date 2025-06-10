@@ -34,9 +34,42 @@
             <h3>{{profiles.email_address}}</h3>
             <p>
                 <a href="{% url 'update_profile' profiles.pk %}">Update this profile</a>
+                <a href="{% url 'news_feed' profiles.pk %}">View News Feed</a>
             </p>
         </div>
     </article>
+
+    {% comment %} Friends section {% endcomment %}
+    <article class="featured">
+        <div>
+            <h2>Friends</h2>
+            <p>
+                <a href="{% url 'friend_suggestions' profiles.pk %}">Find Friends</a>
+            </p>
+            {% comment %} Display all friends for this profile {% endcomment %}
+            {% for friend in profiles.get_friends %}
+                <div style="display: inline-block; margin: 10px; text-align: center;">
+                    <a href="{% url 'show_profile' friend.pk %}">
+                        {% if friend.image_file %}
+                            <img src="{{ friend.image_file.url }}" alt="{{ friend.first_name }} {{ friend.last_name }}" 
+                                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px;">
+                        {% else %}
+                            <div style="width: 100px; height: 100px; background-color: #ddd; 
+                                        border-radius: 10px; display: flex; align-items: center; 
+                                        justify-content: center;">
+                                No Image
+                            </div>
+                        {% endif %}
+                        <br>
+                        {{ friend.first_name }} {{ friend.last_name }}
+                    </a>
+                </div>
+            {% empty %}
+                <p>No friends yet.</p>
+            {% endfor %}
+        </div>
+    </article>
+
 
     {% comment %} Status messages section spanning full width {% endcomment %}
     <article class="featured">

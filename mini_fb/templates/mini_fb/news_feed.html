@@ -1,0 +1,108 @@
+{% extends 'mini_fb/base.html' %}
+
+{% comment %}
+    File: news_feed.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/9/2025
+    Description: Template to display the news feed for a profile.
+    Shows status messages from the profile and their friends,
+    ordered by most recent first.
+    
+    Context Variables:
+    - profile: Profile object whose news feed is being displayed
+{% endcomment %}
+
+{% block content %}
+
+<h1>News Feed for {{ profile.first_name }} {{ profile.last_name }}</h1>
+
+<nav style="margin-bottom: 20px;">
+    <a href="{% url 'show_all_profiles' %}" 
+       style="background-color: #1877f2; color: white; padding: 8px 16px; 
+              text-decoration: none; border-radius: 6px; margin-right: 10px;">
+        All Profiles
+    </a>
+    <a href="{% url 'show_profile' profile.pk %}" 
+       style="background-color: #1877f2; color: white; padding: 8px 16px; 
+              text-decoration: none; border-radius: 6px; margin-right: 10px;">
+        Profile Page
+    </a>
+    <a href="{% url 'news_feed' profile.pk %}" 
+       style="background-color: #42b883; color: white; padding: 8px 16px; 
+              text-decoration: none; border-radius: 6px;">
+        News Feed
+    </a>
+</nav>
+
+<main>
+    {% comment %} Display all status messages in the news feed {% endcomment %}
+    {% for status in profile.get_news_feed %}
+        <article style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; 
+                       margin-bottom: 20px; background-color: #fff; max-width: 600px;">
+            
+            {% comment %} Profile info and timestamp {% endcomment %}
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                {% comment %} Profile image {% endcomment %}
+                <a href="{% url 'show_profile' status.profile.pk %}">
+                    {% if status.profile.image_file %}
+                        <img src="{{ status.profile.image_file.url }}" 
+                             alt="{{ status.profile.first_name }} {{ status.profile.last_name }}"
+                             style="width: 50px; height: 50px; object-fit: cover; 
+                                    border-radius: 50%; margin-right: 15px;">
+                    {% else %}
+                        <div style="width: 50px; height: 50px; background-color: #ddd; 
+                                    border-radius: 50%; margin-right: 15px; display: flex; 
+                                    align-items: center; justify-content: center; font-size: 12px;">
+                            No Image
+                        </div>
+                    {% endif %}
+                </a>
+                
+                {% comment %} Name and timestamp {% endcomment %}
+                <div>
+                    <h3 style="margin: 0;">
+                        <a href="{% url 'show_profile' status.profile.pk %}" 
+                           style="text-decoration: none; color: #1877f2;">
+                            {{ status.profile.first_name }} {{ status.profile.last_name }}
+                        </a>
+                    </h3>
+                    <p style="margin: 0; color: #65676b; font-size: 14px;">
+                        {{ status.timestamp }}
+                    </p>
+                </div>
+            </div>
+            
+            {% comment %} Status message content {% endcomment %}
+            <div style="margin-bottom: 15px;">
+                <p style="font-size: 16px; line-height: 1.5;">{{ status.message }}</p>
+            </div>
+            
+            {% comment %} Display images if any {% endcomment %}
+            {% if status.get_images %}
+                <div style="margin-top: 15px;">
+                    {% for img in status.get_images %}
+                        <img src="{{ img.image_file.url }}" 
+                             alt="{{ img.caption|default:'Status image' }}"
+                             style="max-width: 100%; height: auto; border-radius: 8px; 
+                                    margin-bottom: 10px;">
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <hr style="margin: 15px 0; border: none; border-top: 1px solid #e4e6eb;">
+            
+            {% comment %} Show which profile this belongs to if it's a friend's post {% endcomment %}
+            {% if status.profile != profile %}
+                <p style="font-size: 14px; color: #65676b; font-style: italic;">
+                    From your friend {{ status.profile.first_name }}'s timeline
+                </p>
+            {% endif %}
+        </article>
+    {% empty %}
+        <article style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; 
+                       background-color: #fff; max-width: 600px;">
+            <p>No status messages to show. Add some friends or create a status to see content here!</p>
+        </article>
+    {% endfor %}
+</main>
+
+{% endblock %}

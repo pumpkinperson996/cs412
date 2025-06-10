@@ -6,7 +6,7 @@
 from django.contrib import admin
 
 # import our custom models to register them with the admin interface
-from .models import Profile, StatusMessage, Image, StatusImage
+from .models import Profile, StatusMessage, Image, StatusImage, Friend
 
 # register the Profile model with Django admin
 # this allows CRUD operations on Profile objects through the admin interface
@@ -18,3 +18,5 @@ admin.site.register(StatusMessage)
 
 admin.site.register(Image)
 admin.site.register(StatusImage)
+
+admin.site.register(Friend)

@@ -1,0 +1,58 @@
+{% extends 'mini_fb/base.html' %}
+
+{% comment %}
+    File: friend_suggestions.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/9/2025
+    Description: Template to display friend suggestions for a profile.
+    Shows potential friends that the user can add, excluding current friends
+    and the profile itself.
+    
+    Context Variables:
+    - profile: Profile object for which to show friend suggestions
+{% endcomment %}
+
+{% block content %}
+
+<h1>People {{ profile.first_name }} {{ profile.last_name }} may know:</h1>
+
+<p>
+    <a href="{% url 'show_profile' profile.pk %}">Back to Profile</a>
+</p>
+
+<main class="grid-container">
+    {% comment %} Display each friend suggestion {% endcomment %}
+    {% for suggestion in profile.get_friend_suggestions %}
+        <article class="profile" style="text-align: center;">
+            {% comment %} Add Friend button {% endcomment %}
+            <a href="{% url 'add_friend' profile.pk suggestion.pk %}" 
+               style="background-color: #1877f2; color: white; padding: 8px 16px; 
+                      text-decoration: none; border-radius: 6px; display: inline-block; 
+                      margin-bottom: 10px;">
+                Add Friend
+            </a>
+            
+            {% comment %} Profile image or placeholder {% endcomment %}
+            {% if suggestion.image_file %}
+                <img src="{{ suggestion.image_file.url }}" 
+                     alt="{{ suggestion.first_name }} {{ suggestion.last_name }}"
+                     style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px;">
+            {% else %}
+                <div style="width: 150px; height: 150px; background-color: #ddd; 
+                            border-radius: 10px; display: flex; align-items: center; 
+                            justify-content: center; margin: 0 auto;">
+                    No Image
+                </div>
+            {% endif %}
+            
+            {% comment %} Profile name {% endcomment %}
+            <h3>{{ suggestion.first_name }} {{ suggestion.last_name }}</h3>
+            <p>{{ suggestion.city }}</p>
+        </article>
+    {% empty %}
+        <article>
+            <p>No friend suggestions available at this time.</p>
+        </article>
+    {% endfor %}
+</main>
+
+{% endblock %}
