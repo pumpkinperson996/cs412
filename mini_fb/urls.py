@@ -33,6 +33,9 @@ from django.urls import path
 # import all view classes from the views module
 from .views import *
 
+from django.contrib.auth import views as auth_views    ## NEW
+
+
 # list of URL patterns that map URLs to view classes
 urlpatterns = [
     # map the root URL (empty string) to the view that shows all profiles
@@ -45,28 +48,32 @@ urlpatterns = [
     path('profile/create', CreateProfileView.as_view(), name='create_profile'),
     
     # map status message creation URL with profile primary key to create status view
-    path('profile/<int:pk>/create_status', CreateStatusMessageView.as_view(), 
-         name='create_status'),
+    path('status/create_status', CreateStatusMessageView.as_view(), name='create_status'),
+
     
-    path('profile/<int:pk>/update', UpdateProfileView.as_view(), name='update_profile'),
+    path('profile/update', UpdateProfileView.as_view(), name='update_profile'),
     
     path('status/<int:pk>/delete', DeleteStatusMessageView.as_view(), name='delete_status'),
     
     path('status/<int:pk>/update', UpdateStatusMessageView.as_view(), name='update_status'),
     
     # map add friend URL with two profile PKs to the add friend view
-    path('profile/<int:pk>/add_friend/<int:other_pk>', AddFriendView.as_view(), name='add_friend'),
+    path('profile/add_friend/<int:other_pk>', AddFriendView.as_view(), name='add_friend'),
     
     # map friend suggestions URL to show friend suggestions view
-    path('profile/<int:pk>/friend_suggestions', ShowFriendSuggestionsView.as_view(), name='friend_suggestions'),
+    path('profile/friend_suggestions', ShowFriendSuggestionsView.as_view(), name='friend_suggestions'),
     
     # map news feed URL to show news feed view
-    path('profile/<int:pk>/news_feed', ShowNewsFeedView.as_view(), name='news_feed'),
+    path('profile/news_feed', ShowNewsFeedView.as_view(), name='news_feed'),
 
+    path('login/', auth_views.LoginView.as_view(template_name='mini_fb/login.html'), name='login'), ## NEW
+    
+	 path('logout/', auth_views.LogoutView.as_view(next_page='show_all_profiles'), name='logout'), ## NEW
 
 
     
-    
+   path('register/', RegistrationView.as_view(), name='register'),
+
     
     
 ]

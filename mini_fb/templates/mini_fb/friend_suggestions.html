@@ -24,12 +24,15 @@
     {% for suggestion in profile.get_friend_suggestions %}
         <article class="profile" style="text-align: center;">
             {% comment %} Add Friend button {% endcomment %}
-            <a href="{% url 'add_friend' profile.pk suggestion.pk %}" 
+            {% comment %} Add Friend button - only show if user owns this profile {% endcomment %}
+            {% if request.user.is_authenticated and profile.user == request.user %}
+            <a href="{% url 'add_friend' suggestion.pk %}" 
                style="background-color: #1877f2; color: white; padding: 8px 16px; 
                       text-decoration: none; border-radius: 6px; display: inline-block; 
                       margin-bottom: 10px;">
                 Add Friend
             </a>
+            {% endif %}
             
             {% comment %} Profile image or placeholder {% endcomment %}
             {% if suggestion.image_file %}

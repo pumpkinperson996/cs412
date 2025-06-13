@@ -32,10 +32,14 @@
             <h2>{{profiles.first_name}} {{profiles.last_name}}</h2>
             <h3>{{profiles.city}}</h3>
             <h3>{{profiles.email_address}}</h3>
+            
+            {% comment %} Only show these links if user is authenticated and owns this profile {% endcomment %}
+            {% if request.user.is_authenticated and profiles.user == request.user %}
             <p>
-                <a href="{% url 'update_profile' profiles.pk %}">Update this profile</a>
-                <a href="{% url 'news_feed' profiles.pk %}">View News Feed</a>
+                <a href="{% url 'update_profile' %}">Update this profile</a>
+                <a href="{% url 'news_feed'%}">View News Feed</a>
             </p>
+            {% endif %}
         </div>
     </article>
 
@@ -43,9 +47,14 @@
     <article class="featured">
         <div>
             <h2>Friends</h2>
+            
+            {% comment %} Only show Find Friends link if user owns this profile {% endcomment %}
+            {% if request.user.is_authenticated and profiles.user == request.user %}
             <p>
-                <a href="{% url 'friend_suggestions' profiles.pk %}">Find Friends</a>
+                <a href="{% url 'friend_suggestions' %}">Find Friends</a>
             </p>
+            {% endif %}
+            
             {% comment %} Display all friends for this profile {% endcomment %}
             {% for friend in profiles.get_friends %}
                 <div style="display: inline-block; margin: 10px; text-align: center;">
@@ -75,9 +84,13 @@
     <article class="featured">
         <div>
             <h2>Status Messages</h2>
+            
+            {% comment %} Only show create status link if user owns this profile {% endcomment %}
+            {% if request.user.is_authenticated and profiles.user == request.user %}
             <p>
-                <a href="{% url 'create_status' profiles.pk %}">Create a new status</a>
+                <a href="{% url 'create_status'%}">Create a new status</a>
             </p>
+            {% endif %}
         </div>
         <div></div> {% comment %} Empty div to maintain grid layout {% endcomment %}
     </article>
@@ -94,10 +107,13 @@
                     <img src='{{img.image_file.url}}' alt='{{img.caption|default:"Status image"}}'>
                 {% endfor %}
                 
+                {% comment %} Only show update/delete links if user owns this profile {% endcomment %}
+                {% if request.user.is_authenticated and profiles.user == request.user %}
                 <p>
                     <a href="{% url 'update_status' sm.pk %}">Update</a> | 
                     <a href="{% url 'delete_status' sm.pk %}">Delete</a>
                 </p>
+                {% endif %}
             </div>
         </article>
     {% empty %}

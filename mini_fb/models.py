@@ -6,6 +6,9 @@
 from django.db import models
 from django.urls import reverse
 
+from django.contrib.auth.models import User
+
+
 
 class Profile(models.Model):
     """Model representing a user profile in the mini Facebook application.
@@ -29,6 +32,9 @@ class Profile(models.Model):
     # URL to user's profile image - optional field
     # image_url = models.URLField(blank=True)
     image_file = models.ImageField(blank=True) # an actual image
+    
+    # data attributes of a profile:
+    user = models.ForeignKey(User, on_delete=models.CASCADE) ## NEW
     
     def __str__(self):
         """Return a string representation of this Profile object."""

@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class Article(models.Model):
@@ -12,6 +13,8 @@ class Article(models.Model):
     published = models.DateTimeField(auto_now=True)
     # image_url = models.URLField(blank=True) ## new
     image_file = models.ImageField(blank=True) # an actual image
+    user = models.ForeignKey(User, on_delete=models.CASCADE) ## NEW
+
 
 
     

@@ -1,28 +1,58 @@
-<!-- blog/base.html -->
+<!-- blog/templates/blog/base.html -->
 {% load static %}
-
 <html>
     <head>
-        <title>Our Blog</title>
+        <title>Blog</title>
         <link rel="stylesheet" href="{% static 'styles-blog.css' %}">
     </head>
-
     <body>
-        <head>
-            <h1>Our Blog</h1>
+        <header>
+            <h1>Blog</h1>
             <nav>
                 <ul>
-                    <li><a href="{% url 'random' %}">Random</a></li>
+
                     <li><a href="{% url 'show_all' %}">Show All</a></li>
-                    <li><a href="{% url 'create_article' %}">Create</a></li>
+                    <li><a href="{% url 'random' %}">Random</a></li>
+                      <!-- URLs for logged in users only -->
+                      {% if request.user.is_authenticated %}
+                      <li><a href="{% url 'create_article' %}">Create</a></li>
+                      <li><a href="{% url 'logout' %}">Logout</a></li>
+                        
+                      <!-- URLs for users who are not logged in -->
+                     {% else %}
+                     <li><a href="{% url 'login' %}">Login</a></li>
+                     {% endif %}
+
+                    <!-- Add: URLs for authentication -->
+                    {% if request.user.is_authenticated %}                    
+                    <li>
+<!-- 
+NOTE: Due to change in Django version, 
+Logout must be a POST request, so we are creating a small form to do it. 
+-->
+                    <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" value="Log out">
+                    </form>
+                    </li>
+                    {% comment %} {% else %}
+                    <li><a href="{% url 'login' %}">Log in</a></li> {% endcomment %}
+                    {% endif %}
+
                 </ul>
+                
+                <!-- show who's logged in -->
+                {% if request.user.is_authenticated %}
+                Logged in user: {{ request.user }}.
+                {% else %}
+                Not logged in.
+                {% endif %}
             </nav>
-        </head>
-
-        <!-- substitute in the specific content here -->
-        {% block content %}
-        {% endblock %}
-
+        </header>
+    
+    {% block content %}
+    {% endblock %}    
+  
     </body>
-
 </html>
+

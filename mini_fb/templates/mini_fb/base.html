@@ -42,10 +42,43 @@
                     {% comment %} Link to view all profiles in the system {% endcomment %}
                     <li><a href="{% url 'show_all_profiles' %}">All Profiles</a></li>
                     
+                    
+
+                    <!-- Add: URLs for authentication -->
+                    {% if request.user.is_authenticated %}      
                     {% comment %} Link to create a new profile {% endcomment %}
                     <li><a href="{% url 'create_profile' %}">Create Profile</a></li>
+                    
+                    <li>
+                    <!-- 
+                    NOTE: Due to change in Django version, 
+                    Logout must be a POST request, so we are creating a small form to do it. 
+                    -->
+                    <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" value="Log out">
+                    </form>
+                    </li>
+
+                    
+
+                    {% else %}
+                    <li><a href="{% url 'login' %}">Log in</a></li>
+                    {% endif %}
                 </ul>
+
+                {% if request.user.is_authenticated %}
+                Logged in user: {{ request.user }}.
+                {% else %}
+                Not logged in.
+                {% endif %}
+
+                {% if request.user.profile_set.first %}
+                <li><a href="{% url 'show_profile' request.user.profile_set.first.pk %}">My Profile</a></li>
+                {% endif %}
             </nav>
+
+            
         </header>
 
         {% comment %} 
