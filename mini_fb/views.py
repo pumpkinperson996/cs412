@@ -239,28 +239,34 @@ class AddFriendView(LoginRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         """Process the add friend request.
         
-        Reads profile PKs from URL parameters, validates them,
-        and creates the friend relationship if valid.
+        Creates friend relationship between logged-in user's profile
+        and the other profile specified in URL.
         """
-        # Get the profile PKs from URL parameters
-        pk = self.kwargs.get('pk')  # Profile doing the adding
+        # Get the other profile PK from URL parameters
         other_pk = self.kwargs.get('other_pk')  # Profile to add as friend
         
-        # Retrieve the Profile objects from the database
+        # Get profile for logged-in user
+        profile = Profile.objects.filter(user=request.user).first()
+        
+        # Check if profile exists
+        if not profile:
+            # If no profile exists for this user, redirect to create profile
+            return redirect('create_profile')
+        
         try:
-            profile = Profile.objects.filter(user=request.user).first()
+            # Get the other profile
             other_profile = Profile.objects.get(pk=other_pk)
             
             # Use the add_friend method to create the friendship
             profile.add_friend(other_profile)
             
         except Profile.DoesNotExist:
-            # Handle case where one of the profiles doesn't exist
+            # Handle case where the other profile doesn't exist
+            # Still redirect to the user's profile
             pass
         
-        # Redirect back to the profile page
-        return redirect('show_profile', pk=pk)
-
+        # Always redirect back to the logged-in user's profile page
+        return redirect('show_profile', pk=profile.pk)
 
 class ShowFriendSuggestionsView(DetailView):
     """Display friend suggestions for a specific profile.

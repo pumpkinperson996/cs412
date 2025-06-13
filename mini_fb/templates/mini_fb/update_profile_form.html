@@ -27,7 +27,7 @@
     The form uses POST method for secure data submission
     action attribute specifies where to send the form data when submitted
 {% endcomment %}
-<form action="{% url 'update_profile' profile.pk %}" method="POST"
+<form action="{% url 'update_profile'%}" method="POST"
     enctype = "multipart/form-data">
     {% comment %} CSRF token for security - protects against cross-site request forgery {% endcomment %}
     {% csrf_token %}
@@ -44,7 +44,7 @@
     <input type="submit" name="submit" value="Update">
 </form>
 
-<form action = "{% url 'show_profile' profile.pk %}" method = "GET">
+<form action = "{% url 'show_profile' object.pk %}" method = "GET">
     <input type = "submit" value = "Cancel">
 </form>
 {% endblock %}
