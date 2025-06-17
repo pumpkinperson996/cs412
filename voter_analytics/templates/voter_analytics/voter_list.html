@@ -1,0 +1,189 @@
+{% extends 'voter_analytics/base.html' %}
+
+{% block title %}Voter List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Newton Voter Analytics</h1>
+    
+    <!-- Navigation -->
+    <div class="mb-4">
+        <a href="{% url 'voter_analytics:voters' %}" class="btn btn-primary">Voter List</a>
+        <a href="{% url 'voter_analytics:graphs' %}" class="btn btn-secondary">View Graphs</a>
+    </div>
+    
+    <!-- Filter Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Filter Voters</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="party_affiliation">Party Affiliation</label>
+                            <select name="party_affiliation" id="party_affiliation" class="form-control">
+                                <option value="">All Parties</option>
+                                {% for party in parties %}
+                                    <option value="{{ party }}" {% if party == selected_party %}selected{% endif %}>
+                                        {{ party }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="min_dob_year">Min Birth Year</label>
+                            <select name="min_dob_year" id="min_dob_year" class="form-control">
+                                <option value="">No Minimum</option>
+                                {% for year in years %}
+                                    <option value="{{ year }}" {% if year|stringformat:"s" == selected_min_year %}selected{% endif %}>
+                                        {{ year }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="max_dob_year">Max Birth Year</label>
+                            <select name="max_dob_year" id="max_dob_year" class="form-control">
+                                <option value="">No Maximum</option>
+                                {% for year in years %}
+                                    <option value="{{ year }}" {% if year|stringformat:"s" == selected_max_year %}selected{% endif %}>
+                                        {{ year }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="voter_score">Voter Score</label>
+                            <select name="voter_score" id="voter_score" class="form-control">
+                                <option value="">Any Score</option>
+                                {% for score in voter_scores %}
+                                    <option value="{{ score }}" {% if score|stringformat:"s" == selected_voter_score %}selected{% endif %}>
+                                        {{ score }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <label>Voted in Elections:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v20state" id="v20state" 
+                                   {% if v20state_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v20state">2020 State</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v21town" id="v21town"
+                                   {% if v21town_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v21town">2021 Town</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v21primary" id="v21primary"
+                                   {% if v21primary_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v21primary">2021 Primary</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v22general" id="v22general"
+                                   {% if v22general_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v22general">2022 General</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v23town" id="v23town"
+                                   {% if v23town_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v23town">2023 Town</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a href="{% url 'voter_analytics:voters' %}" class="btn btn-secondary">Clear Filters</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Voter List -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Voter List ({{ page_obj.paginator.count }} voters found)</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Date of Birth</th>
+                        <th>Party</th>
+                        <th>Voter Score</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voter in voters %}
+                    <tr>
+                        <td>{{ voter.first_name }} {{ voter.last_name }}</td>
+                        <td>{{ voter.street_number }} {{ voter.street_name }}</td>
+                        <td>{{ voter.date_of_birth|date:"m/d/Y" }}</td>
+                        <td>{{ voter.party_affiliation }}</td>
+                        <td>{{ voter.voter_score }}</td>
+                        <td>
+                            <a href="{% url 'voter_analytics:voter' voter.pk %}" class="btn btn-sm btn-info">View Details</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No voters found matching your criteria.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                </li>
+            {% endif %}
+            
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

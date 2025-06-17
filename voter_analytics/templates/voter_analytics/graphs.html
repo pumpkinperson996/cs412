@@ -1,0 +1,152 @@
+{% extends 'voter_analytics/base.html' %}
+
+{% block title %}Voter Analytics - Graphs{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Voter Analytics - Graphs</h1>
+    
+    <!-- Navigation -->
+    <div class="mb-4">
+        <a href="{% url 'voter_analytics:voters' %}" class="btn btn-primary">Voter List</a>
+        <a href="{% url 'voter_analytics:graphs' %}" class="btn btn-secondary">View Graphs</a>
+    </div>
+    
+    <!-- Filter Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Filter Data</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="party_affiliation">Party Affiliation</label>
+                            <select name="party_affiliation" id="party_affiliation" class="form-control">
+                                <option value="">All Parties</option>
+                                {% for party in parties %}
+                                    <option value="{{ party }}" {% if party == selected_party %}selected{% endif %}>
+                                        {{ party }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="min_dob_year">Min Birth Year</label>
+                            <select name="min_dob_year" id="min_dob_year" class="form-control">
+                                <option value="">No Minimum</option>
+                                {% for year in years %}
+                                    <option value="{{ year }}" {% if year|stringformat:"s" == selected_min_year %}selected{% endif %}>
+                                        {{ year }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="max_dob_year">Max Birth Year</label>
+                            <select name="max_dob_year" id="max_dob_year" class="form-control">
+                                <option value="">No Maximum</option>
+                                {% for year in years %}
+                                    <option value="{{ year }}" {% if year|stringformat:"s" == selected_max_year %}selected{% endif %}>
+                                        {{ year }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="voter_score">Voter Score</label>
+                            <select name="voter_score" id="voter_score" class="form-control">
+                                <option value="">Any Score</option>
+                                {% for score in voter_scores %}
+                                    <option value="{{ score }}" {% if score|stringformat:"s" == selected_voter_score %}selected{% endif %}>
+                                        {{ score }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <label>Voted in Elections:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v20state" id="v20state" 
+                                   {% if v20state_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v20state">2020 State</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v21town" id="v21town"
+                                   {% if v21town_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v21town">2021 Town</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v21primary" id="v21primary"
+                                   {% if v21primary_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v21primary">2021 Primary</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v22general" id="v22general"
+                                   {% if v22general_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v22general">2022 General</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="v23town" id="v23town"
+                                   {% if v23town_checked %}checked{% endif %}>
+                            <label class="form-check-label" for="v23town">2023 Town</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a href="{% url 'voter_analytics:graphs' %}" class="btn btn-secondary">Clear Filters</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Graphs -->
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    {{ birth_year_graph|safe }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    {{ party_graph|safe }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    {{ election_graph|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
