@@ -29,6 +29,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Tell django using customized user model rather than default
+AUTH_USER_MODEL = 'toiletapp.User'
+
 
 # Application definition
 
@@ -39,18 +42,33 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "hw",
-    "formdata",
-    "quotes",
-    "restaurant",
-    "blog",
-    "mini_fb",
-    "voter_analytics",
+    # "hw",
+    # "formdata",
+    # "quotes",
+    # "restaurant",
+    # "blog",
+    # "mini_fb",
+    # "voter_analytics",  Commit for temporary using for final project due to User model conflict.
+    'toiletapp',
+    'rest_framework',
+    'corsheaders',  
+    'rest_framework.authtoken',
  
     
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', #Allow cross-domain requests
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +77,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True #Allow cross-domain requests
 
 ROOT_URLCONF = 'cs412.urls'
 
