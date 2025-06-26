@@ -1,0 +1,56 @@
+ <!-- toiletapp/templates/toiletapp/update_restroom_form.html -->
+{% extends 'toiletapp/base.html' %}
+{% comment %}
+    File: update_restroom_form.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Template for updating restroom information.
+    Only the creator of the restroom can update its details.
+    
+    Context Variables:
+    - object: Restroom object being updated
+    - form: Form with restroom fields
+{% endcomment %}
+
+{% block title %}Update {{ object.name }} - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>Update Restroom Information</h2>
+
+<div class="restroom-info">
+    <p>You are updating: <strong>{{ object.name }}</strong></p>
+    <p>Created on: {{ object.created_at|date:"M d, Y" }}</p>
+</div>
+
+<form method="POST" class="restroom-form">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Restroom</button>
+        <a href="{% url 'toiletapp:show_restroom' object.pk %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+<div class="update-note">
+    <p><strong>Note:</strong> Only basic information can be updated. Ratings and reviews cannot be modified.</p>
+</div>
+
+<style>
+    .restroom-info {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .update-note {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}

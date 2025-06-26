@@ -31,7 +31,8 @@ urlpatterns = [
     # path("blog/", include("blog.urls")),
     # path("mini_fb/", include("mini_fb.urls")),
     # path("voter_analytics/", include("voter_analytics.urls")), Commit for temporary using for final project due to User model conflict.
-    path('api/', include('toiletapp.api_urls')), 
+    # path('api/', include('toiletapp.api_urls')), 
+    path('', include('toiletapp.urls', namespace='toiletapp')),
     
     
 ]

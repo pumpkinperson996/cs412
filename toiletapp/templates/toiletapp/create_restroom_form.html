@@ -1,0 +1,17 @@
+<!-- toiletapp/templates/toiletapp/create_restroom_form.html -->
+{% extends 'toiletapp/base.html' %}
+
+{% block title %}Add New Restroom - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>Add a New Restroom</h2>
+
+<form method="POST" class="restroom-form">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <button type="submit">Add Restroom</button>
+    <a href="{% url 'toiletapp:show_all_restrooms' %}">Cancel</a>
+</form>
+{% endblock %}

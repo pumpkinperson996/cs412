@@ -1,0 +1,49 @@
+<!-- toiletapp/templates/toiletapp/show_all_restrooms.html -->
+{% extends 'toiletapp/base.html' %}
+
+{% block title %}Find Restrooms - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>Find Public Restrooms</h2>
+
+{% comment %} Search and filter form {% endcomment %}
+<form method="get" class="search-form">
+    {{ search_form.as_p }}
+    <button type="submit">Search</button>
+    <a href="{% url 'toiletapp:show_all_restrooms' %}">Clear Filters</a>
+</form>
+
+{% comment %} Restroom listings {% endcomment %}
+<div class="restroom-grid">
+    {% for item in restroom_stats %}
+        <article class="restroom-card">
+            <h3>
+                <a href="{% url 'toiletapp:show_restroom' item.restroom.pk %}">{{ item.restroom.name }}</a>
+            </h3>
+            <p>{{ item.restroom.address }}</p>
+            <p>Rating: {{ item.restroom.avg_rating|floatformat:1 }}/5.0</p>
+            <p>Stalls: {{ item.available }} available / {{ item.total }}</p>
+            <p>Added by: {{ item.restroom.created_by.username }}</p>
+        </article>
+    {% empty %}
+        <p>No restrooms found. Be the first to add one!</p>
+    {% endfor %}
+</div>
+
+{% comment %} Pagination {% endcomment %}
+{% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; First</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

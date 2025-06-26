@@ -1,0 +1,152 @@
+<!-- toiletapp/templates/toiletapp/order_detail.html -->
+{% extends 'toiletapp/base.html' %}
+{% comment %}
+    File: order_detail.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Detailed view of a specific order.
+    Shows complete order information including items, status, and delivery details.
+    
+    Context Variables:
+    - order: Order object to display
+{% endcomment %}
+
+{% block title %}Order #{{ order.id }} - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>Order Details</h2>
+
+<div class="order-summary">
+    <div class="order-header">
+        <h3>Order #{{ order.id }}</h3>
+        <span class="order-status status-{{ order.status }}">{{ order.get_status_display }}</span>
+    </div>
+    
+    <div class="order-info-grid">
+        <div class="info-section">
+            <h4>Order Information</h4>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y g:i A" }}</p>
+            <p><strong>Last Updated:</strong> {{ order.updated_at|date:"M d, Y g:i A" }}</p>
+            {% if order.tracking_number %}
+                <p><strong>Tracking Number:</strong> {{ order.tracking_number }}</p>
+            {% endif %}
+            {% if order.estimated_delivery %}
+                <p><strong>Estimated Delivery:</strong> {{ order.estimated_delivery|date:"M d, Y" }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="info-section">
+            <h4>Delivery Location</h4>
+            <p><strong>{{ order.restroom.name }}</strong></p>
+            <p>{{ order.restroom.address }}</p>
+            {% if order.delivery_notes %}
+                <p><strong>Delivery Notes:</strong> {{ order.delivery_notes }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="order-items-section">
+        <h4>Items Ordered</h4>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.get_items_detail %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.product.unit_price|floatformat:2 }}</td>
+                        <td>${{ item.subtotal|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3"><strong>Total:</strong></td>
+                    <td><strong>${{ order.total_amount|floatformat:2 }}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    <div class="order-actions">
+        {% if order.can_be_cancelled %}
+            <form method="POST" action="{% url 'toiletapp:cancel_order' order.pk %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" 
+                        onclick="return confirm('Are you sure you want to cancel this order?')">
+                    Cancel Order
+                </button>
+            </form>
+        {% endif %}
+        <a href="{% url 'toiletapp:my_orders' %}" class="btn btn-secondary">Back to Orders</a>
+    </div>
+</div>
+
+<style>
+    .order-summary {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .info-section {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .info-section h4 {
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+    
+    .items-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+    
+    .items-table th,
+    .items-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .items-table th {
+        background: #f8f9fa;
+        font-weight: bold;
+    }
+    
+    .items-table tfoot td {
+        border-top: 2px solid #333;
+        border-bottom: none;
+        padding-top: 1rem;
+    }
+    
+    .order-actions {
+        margin-top: 2rem;
+        text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

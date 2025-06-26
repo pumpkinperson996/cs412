@@ -1,0 +1,106 @@
+<!-- toiletapp/templates/toiletapp/create_order_form.html -->
+{% extends 'toiletapp/base.html' %}
+{% comment %}
+    File: create_order_form.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Template for creating supply orders for a restroom.
+    Displays available products and allows users to select quantities
+    for delivery to the specified restroom location.
+    
+    Context Variables:
+    - restroom: Restroom object where supplies will be delivered
+    - products: QuerySet of available Product objects
+    - form: CreateOrderForm instance for quantity selection
+{% endcomment %}
+
+{% block title %}Order Supplies for {{ restroom.name }} - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>Order Supplies for Delivery</h2>
+
+<div class="order-info">
+    <h3>Delivery Location</h3>
+    <p><strong>{{ restroom.name }}</strong></p>
+    <p>{{ restroom.address }}</p>
+</div>
+
+<form method="POST" class="order-form">
+    {% csrf_token %}
+    
+    <h3>Select Products</h3>
+    
+    <div class="products-grid">
+        {% for product in products %}
+            <article class="product-card">
+                {% comment %} Product image {% endcomment %}
+                {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+                {% endif %}
+                
+                {% comment %} Product details {% endcomment %}
+                <h4>{{ product.name }}</h4>
+                <p class="category">{{ product.get_category_display }}</p>
+                <p class="description">{{ product.description }}</p>
+                <p class="price">${{ product.unit_price }}</p>
+                <p class="stock">{{ product.stock_qty }} in stock</p>
+                
+                {% comment %} Quantity selector {% endcomment %}
+                <div class="quantity-selector">
+                    <label for="product_{{ product.id }}">Quantity:</label>
+                    <input type="number" 
+                           name="product_{{ product.id }}" 
+                           id="product_{{ product.id }}"
+                           min="0" 
+                           max="{{ product.stock_qty }}" 
+                           value="0"
+                           class="quantity-input">
+                </div>
+            </article>
+        {% empty %}
+            <p>No products available for order at this time.</p>
+        {% endfor %}
+    </div>
+    
+    {% if products %}
+        <div class="order-actions">
+            <button type="submit" class="btn btn-primary">Place Order</button>
+            <a href="{% url 'toiletapp:show_restroom' restroom.pk %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    {% endif %}
+</form>
+
+<style>
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+    
+    .product-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        background: white;
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #27ae60;
+    }
+    
+    .quantity-input {
+        width: 60px;
+        padding: 0.25rem;
+    }
+</style>
+{% endblock %}

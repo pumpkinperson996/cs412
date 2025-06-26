@@ -1,0 +1,103 @@
+<!-- toiletapp/templates/toiletapp/login.html -->
+{% extends 'toiletapp/base.html' %}
+{% comment %}
+    File: login.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Login template for user authentication.
+    Provides login form and link to registration.
+    
+    Context Variables:
+    - form: Django authentication form
+{% endcomment %}
+
+{% block title %}Login - ToiletFinder{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Login to ToiletFinder</h2>
+    
+    <form method="POST" action="{% url 'toiletapp:login' %}" class="login-form">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div class="alert alert-error">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">Password:</label>
+            {{ form.password }}
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        
+        {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% else %}
+            <input type="hidden" name="next" value="{% url 'toiletapp:show_all_restrooms' %}">
+        {% endif %}
+    </form>
+    
+    <div class="auth-links">
+        <p>Don't have an account? <a href="{% url 'toiletapp:register' %}">Register here</a></p>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .login-form .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .login-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+    
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .btn-block {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+    
+    .auth-links {
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+    
+    .auth-links p {
+        margin: 0.5rem 0;
+    }
+    
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}

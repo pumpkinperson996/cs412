@@ -1,0 +1,77 @@
+<!-- toiletapp/templates/toiletapp/show_restroom_detail.html -->
+
+{% extends 'toiletapp/base.html' %}
+
+{% block title %}{{ restroom.name }} - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>{{ restroom.name }}</h2>
+<p><strong>Address:</strong> {{ restroom.address }}</p>
+<p><strong>Average Rating:</strong> {{ restroom.avg_rating|floatformat:1 }}/5.0</p>
+<p><strong>Added by:</strong> {{ restroom.created_by.username }} on {{ restroom.created_at|date:"M d, Y" }}</p>
+
+{% if request.user == restroom.created_by %}
+    <p><a href="{% url 'toiletapp:update_restroom' restroom.pk %}">Edit Restroom</a></p>
+{% endif %}
+
+{% comment %} Stall Status Section {% endcomment %}
+<section class="stall-status">
+    <h3>Stall Availability ({{ available_stalls }}/{{ stalls|length }} available)</h3>
+    <div class="occupancy-bar" style="background: linear-gradient(to right, #27ae60 0%, #27ae60 {{ availability_percentage|floatformat:0 }}%, #e74c3c {{ availability_percentage|floatformat:0 }}%, #e74c3c 100%); height: 20px; border-radius: 10px;"></div>
+    
+    <div class="stalls-grid">
+        {% for stall in stalls %}
+            <div class="stall-card {% if stall.is_occupied %}occupied{% else %}available{% endif %}">
+                <h4>Stall {{ stall.stall_no }}</h4>
+                <p>Status: {% if stall.is_occupied %}Occupied{% else %}Available{% endif %}</p>
+                <p>Last updated: {{ stall.updated_at|timesince }} ago</p>
+                
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'toiletapp:update_stall' stall.pk %}" class="btn">Update Status</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+{% comment %} Order Supplies Section {% endcomment %}
+{% if request.user.is_authenticated %}
+    <section class="order-section">
+        <h3>Need Supplies?</h3>
+        <a href="{% url 'toiletapp:create_order' restroom.pk %}" class="btn btn-primary">Order Supplies for Delivery</a>
+    </section>
+{% endif %}
+
+{% comment %} Reviews Section {% endcomment %}
+<section class="reviews">
+    <h3>Reviews</h3>
+    
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'toiletapp:create_review' restroom.pk %}" class="btn">Write a Review</a>
+    {% endif %}
+    
+    {% for review in reviews %}
+        <article class="review">
+            <header>
+                <strong>{{ review.author.username }}</strong>
+                <span class="rating">{{ review.rating }}/5 stars</span>
+                <time>{{ review.created_at|date:"M d, Y" }}</time>
+            </header>
+            <p>{{ review.comment_text }}</p>
+            
+            {% if review.photo %}
+                <div class="review-photo">
+                    <img src="{{ review.photo.url }}" alt="Review photo" style="max-width: 200px;">
+                </div>
+            {% endif %}
+        
+            
+            {% if request.user == review.author %}
+                <a href="{% url 'toiletapp:delete_review' review.pk %}">Delete Review</a>
+            {% endif %}
+        </article>
+    {% empty %}
+        <p>No reviews yet. Be the first to review!</p>
+    {% endfor %}
+</section>
+{% endblock %}

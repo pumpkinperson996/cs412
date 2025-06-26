@@ -1,0 +1,23 @@
+<!-- toiletapp/templates/toiletapp/create_review_form.html -->
+{% extends 'toiletapp/base.html' %}
+
+{% block title %}Review {{ restroom.name }} - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>Write a Review for {{ restroom.name }}</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    
+    <div class="form-group">
+        <label for="photos">Upload Photos (optional):</label>
+        <input type="file" name="photos" multiple accept="image/*">
+    </div>
+    
+    <button type="submit">Submit Review</button>
+    <a href="{% url 'toiletapp:show_restroom' restroom.pk %}">Cancel</a>
+</form>
+{% endblock %}

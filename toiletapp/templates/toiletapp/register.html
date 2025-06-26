@@ -1,0 +1,63 @@
+<!-- toiletapp/templates/toiletapp/register.html -->
+{% extends 'toiletapp/base.html' %}
+{% comment %}
+    File: register.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Registration template for new users.
+    Provides user registration form.
+    
+    Context Variables:
+    - form: UserCreationForm or custom registration form
+{% endcomment %}
+
+{% block title %}Register - ToiletFinder{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>Create Your Account</h2>
+    
+    <form method="POST" action="{% url 'toiletapp:register' %}" class="register-form">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div class="alert alert-error">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        
+        <table>
+            {{ form.as_table }}
+        </table>
+        
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </form>
+    
+    <div class="auth-links">
+        <p>Already have an account? <a href="{% url 'toiletapp:login' %}">Login here</a></p>
+    </div>
+</div>
+
+<style>
+    .register-form table {
+        width: 100%;
+    }
+    
+    .register-form table td {
+        padding: 0.5rem 0;
+    }
+    
+    .register-form input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .helptext {
+        display: block;
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}

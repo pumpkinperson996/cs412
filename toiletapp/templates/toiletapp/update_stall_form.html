@@ -1,0 +1,98 @@
+<!-- toiletapp/templates/toiletapp/update_stall_form.html -->
+{% extends 'toiletapp/base.html' %}
+{% comment %}
+    File: update_stall_form.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Template for updating stall occupancy status.
+    Allows users to mark a stall as occupied or available.
+    
+    Context Variables:
+    - object: Stall object being updated
+    - form: UpdateStallStatusForm instance
+{% endcomment %}
+
+{% block title %}Update Stall Status - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>Update Stall Status</h2>
+
+<div class="stall-info">
+    <h3>{{ object.restroom.name }}</h3>
+    <p>{{ object.restroom.address }}</p>
+    <h4>Stall {{ object.stall_no }}</h4>
+    <p>Current Status: <strong>{% if object.is_occupied %}Occupied{% else %}Available{% endif %}</strong></p>
+    <p>Last Updated: {{ object.updated_at|timesince }} ago</p>
+    {% if object.updated_by %}
+        <p>Updated by: {{ object.updated_by.username }}</p>
+    {% endif %}
+</div>
+
+<form method="POST" class="status-form">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label>
+            {{ form.is_occupied }}
+            Mark as Occupied
+        </label>
+        <p class="help-text">Check the box if the stall is currently occupied.</p>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Status</button>
+        <a href="{% url 'toiletapp:show_restroom' object.restroom.pk %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+<div class="update-tips">
+    <h4>Tips for Accurate Updates:</h4>
+    <ul>
+        <li>Only update if you're physically at the location</li>
+        <li>Be considerate of other users who rely on accurate information</li>
+        <li>Update again when you leave if the status changes</li>
+    </ul>
+</div>
+
+<style>
+    .stall-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .form-group {
+        margin: 1.5rem 0;
+    }
+    
+    .form-group label {
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+    }
+    
+    .form-group input[type="checkbox"] {
+        margin-right: 0.5rem;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .help-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .update-tips {
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #e3f2fd;
+        border-radius: 8px;
+    }
+    
+    .update-tips ul {
+        margin: 0.5rem 0;
+        padding-left: 1.5rem;
+    }
+</style>
+{% endblock %}

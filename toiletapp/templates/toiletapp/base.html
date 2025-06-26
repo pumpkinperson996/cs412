@@ -1,0 +1,126 @@
+<!-- toiletapp/templates/toiletapp/base.html -->
+{% comment %}
+    File: base.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Base Template for Toilet App
+    
+    This is the base template that provides the common structure for all pages
+    in the toilet app. It includes:
+    - HTML document structure with proper head and body sections
+    - Static CSS file loading for consistent styling
+    - Site-wide navigation menu with links to main pages
+    - Header and footer sections for consistent layout
+    - Content block for child templates to override with specific content
+    
+    Child templates extend this base and override the content block to display
+    their specific content while maintaining the consistent site structure.
+{% endcomment %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ToiletFinder{% endblock %}</title>
+    
+    {% comment %} Link to external CSS file for consistent styling {% endcomment %}
+    <link rel="stylesheet" href="{% static 'toiletapp/styles.css' %}">
+    
+    <style>
+        /* Basic styling for demo */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            background-color: #34495e;
+        }
+        nav a:hover {
+            background-color: #1abc9c;
+        }
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .messages {
+            margin: 1rem 0;
+        }
+        .message {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    {% comment %} Site header with application branding {% endcomment %}
+    <header>
+        <h1>ToiletFinder - Public Restroom Locator</h1>
+        
+        {% comment %} Main navigation menu {% endcomment %}
+        <nav>
+            <ul>
+                <li><a href="{% url 'toiletapp:show_all_restrooms' %}">Find Restrooms</a></li>
+                
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'toiletapp:create_restroom' %}">Add Restroom</a></li>
+                    <li><a href="{% url 'toiletapp:my_orders' %}">My Orders</a></li>
+                    <li>
+                        <form action="{% url 'toiletapp:logout' %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background: #e74c3c; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'toiletapp:login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+            
+            {% if request.user.is_authenticated %}
+                <p>Logged in as: {{ request.user.username }}</p>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% comment %} Display messages {% endcomment %}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% comment %} Main content block for child templates {% endcomment %}
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 ToiletFinder. All rights reserved.</p>
+    </footer>
+</body>
+</html>

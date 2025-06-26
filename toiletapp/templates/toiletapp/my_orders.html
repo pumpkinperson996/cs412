@@ -1,0 +1,148 @@
+<!-- toiletapp/templates/toiletapp/my_orders.html -->
+{% extends 'toiletapp/base.html' %}
+{% comment %}
+    File: my_orders.html
+    Author: Shuwei Zhu (david996@bu.edu), 6/25/2025
+    Description: Template displaying user's order history.
+    Shows all orders placed by the logged-in user with status
+    and details about each order.
+    
+    Context Variables:
+    - orders: QuerySet of Order objects for current user
+    - page_obj: Pagination object
+{% endcomment %}
+
+{% block title %}My Orders - ToiletFinder{% endblock %}
+
+{% block content %}
+<h2>My Order History</h2>
+
+{% for order in orders %}
+    <article class="order-card">
+        <header class="order-header">
+            <h3>Order #{{ order.id }}</h3>
+            <span class="order-status status-{{ order.status }}">{{ order.get_status_display }}</span>
+        </header>
+        
+        <div class="order-details">
+            <p><strong>Delivery to:</strong> {{ order.restroom.name }}</p>
+            <p><strong>Address:</strong> {{ order.restroom.address }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y g:i A" }}</p>
+            
+            {% if order.tracking_number %}
+                <p><strong>Tracking:</strong> {{ order.tracking_number }}</p>
+            {% endif %}
+            
+            {% if order.estimated_delivery %}
+                <p><strong>Est. Delivery:</strong> {{ order.estimated_delivery|date:"M d, Y" }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="order-items">
+            <h4>Items Ordered:</h4>
+            <ul>
+                {% for item in order.get_items_detail %}
+                    <li>
+                        {{ item.product.name }} - 
+                        Qty: {{ item.quantity }} × 
+                        ${{ item.product.unit_price }} = 
+                        ${{ item.subtotal|floatformat:2 }}
+                    </li>
+                {% endfor %}
+            </ul>
+            <p class="order-total"><strong>Total: ${{ order.total_amount|floatformat:2 }}</strong></p>
+        </div>
+        
+        {% if order.can_be_cancelled %}
+            <form method="POST" action="{% url 'toiletapp:cancel_order' order.pk %}" class="cancel-form">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" 
+                        onclick="return confirm('Are you sure you want to cancel this order?')">
+                    Cancel Order
+                </button>
+            </form>
+        {% endif %}
+    </article>
+{% empty %}
+    <p>You haven't placed any orders yet.</p>
+    <a href="{% url 'toiletapp:show_all_restrooms' %}" class="btn btn-primary">Find Restrooms</a>
+{% endfor %}
+
+{% comment %} Pagination {% endcomment %}
+{% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">← Previous</a>
+        {% endif %}
+        
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next →</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+<style>
+    .order-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        background: white;
+    }
+    
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .order-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: bold;
+    }
+    
+    .status-pending { background: #f39c12; color: white; }
+    .status-confirmed { background: #3498db; color: white; }
+    .status-shipped { background: #9b59b6; color: white; }
+    .status-delivered { background: #27ae60; color: white; }
+    .status-cancelled { background: #e74c3c; color: white; }
+    
+    .order-items ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .order-items li {
+        padding: 0.5rem 0;
+        border-bottom: 1px dotted #ddd;
+    }
+    
+    .order-total {
+        text-align: right;
+        font-size: 1.2rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid #333;
+    }
+    
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+</style>
+{% endblock %}

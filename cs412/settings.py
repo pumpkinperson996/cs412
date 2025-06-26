@@ -57,6 +57,11 @@ INSTALLED_APPS = [
     
 ]
 
+# Login URLs
+LOGIN_URL = 'toiletapp:login'
+LOGIN_REDIRECT_URL = 'toiletapp:show_all_restrooms'
+LOGOUT_REDIRECT_URL = 'toiletapp:show_all_restrooms'
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
