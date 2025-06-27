@@ -196,12 +196,7 @@ class Review(models.Model):
     )
     comment_text = models.TextField()
     
-    # store URLs of uploaded photos as JSON list
-    photo_urls = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="List of photo URLs"
-    )
+    
     photo = models.ImageField(upload_to='reviews/', blank=True, null=True)
 
     
